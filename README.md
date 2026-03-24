@@ -1,16 +1,31 @@
-```markdown
-# Week 3: Tiled GPU Matrix Multiplication (Shared Memory)
+# NEU HPC for AI
 
-## Overview
-This project heavily optimizes the GPU matrix multiplication using **Tiling** and **Shared Memory**.
+Weekly GPU programming assignments — from naive CUDA kernels to production-grade AI operator implementations.
 
-## Key Optimizations
-- Threads in a block collaboratively load a "tile" of data from Global Memory into the ultra-fast `__shared__` memory.
-- `__syncthreads()` is used as a barrier to ensure the tile is fully loaded before computation begins.
-- This drastically reduces Global Memory traffic, overcoming the memory bandwidth bottleneck seen in Week 2.
-- **Result:** Reaches high computational performance (~3.0+ TFLOPS on an H100 GPU).
+## Progress
+
+| Week | Topic | Key Result |
+|------|-------|-----------|
+| [Week 1](week1/) | CUDA Basics | Vector addition, first GPU kernel |
+| [Week 2](week2/) | GEMM | 5 transpose/beta tests PASS — 5.15 TFLOPS |
+| [Week 3](week3/) | Tiled GEMM | Shared memory tiling — 6.80 TFLOPS (4.25× speedup) |
+| [Week 4](week4/) | FlashAttention-2 | Algorithm 1 in C (sequential) + CUDA (parallel) |
+| [Week 5](week5/) | CuTe / Layout Algebra | FlashAttention reimplemented with NVIDIA CuTe library |
+| [Week 7](week7/) | MoE / Communication | DeepSeekV3 MoE operator in pure C |
+
+## Stack
+
+- **GPU**: NVIDIA H100 (via [Modal](https://modal.com))
+- **Languages**: CUDA C, C, Python
+- **Libraries**: CUTLASS/CuTe (Week 5), PyTorch (test generation)
 
 ## How to Run
-This code is executed on an **NVIDIA H100 GPU** using Modal.
+
+Each week has a `run_weekN.py` Modal script:
+
 ```bash
-modal run run_week3.py
+# Example: run Week 7
+modal run week7/run_week7.py
+```
+
+Requires a Modal account and `modal` CLI installed (`pip install modal`).

@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.o
+*.out
+gemm
+gemm_naive
+gemm_tiled
+matrix_mult
+flash_attn_cute
+flash_attention_c
+flash_attention_cuda
+.vscode/
+.DS_Store
+
+# PDF reading materials (copyrighted — access from original sources)
+*.pdf
