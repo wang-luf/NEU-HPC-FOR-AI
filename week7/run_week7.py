@@ -55,7 +55,7 @@ class DeepseekV3MLP(nn.Module):
         return self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
 
 class DeepseekV3TopkRouter(nn.Module):
-    \\"\\"\\"Router: sigmoid scoring + top-k selection + weight normalization.\\"\\"\\"
+    '''Router: sigmoid scoring + top-k selection + weight normalization.'''
     def __init__(self, hidden_size, n_experts, top_k):
         super().__init__()
         self.top_k = top_k
