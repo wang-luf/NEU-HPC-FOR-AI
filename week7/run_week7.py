@@ -115,7 +115,7 @@ def int_arr_c(arr, name):
 # ── Emit C header ─────────────────────────────────────────────────────────────
 lines = [
     "// Auto-generated test data — DeepSeekV3 MoE (Week 7)",
-    f"#define H       {H}",
+    f"#define HIDDEN_SZ {H}",
     f"#define I_SZ    {I}",
     f"#define SI_SZ   {SI}",
     f"#define N_EXP   {N_EXP}",
@@ -308,23 +308,23 @@ int main(void) {
     const float *ed[N_EXP] = {E0_DW, E1_DW, E2_DW, E3_DW};
 
     int   all_pass = 1;
-    float *buf = (float*)malloc(H * sizeof(float));
+    float *buf = (float*)malloc(HIDDEN_SZ * sizeof(float));
 
     /* ── Test 1: Expert MLP blocks ─────────────────────────────────────── */
     printf("Test 1: Expert MLP (token 0 through each routed expert)\n");
     const float *refs1[4] = {EXP_OUT_0, EXP_OUT_1, EXP_OUT_2, EXP_OUT_3};
     for (int e = 0; e < N_EXP; e++) {
-        expert_mlp(eg[e], eu[e], ed[e], INPUT, buf, H, I_SZ);
+        expert_mlp(eg[e], eu[e], ed[e], INPUT, buf, HIDDEN_SZ, I_SZ);
         char name[64]; snprintf(name, sizeof(name), "Expert %d MLP", e);
-        all_pass &= check(buf, refs1[e], H, name, 1e-4f);
+        all_pass &= check(buf, refs1[e], HIDDEN_SZ, name, 1e-4f);
     }
 
     /* ── Test 2: Router (topk routing) ────────────────────────────────── */
     printf("\nTest 2: TopK Router (all %d tokens)\n", T_TOK);
     for (int t = 0; t < T_TOK; t++) {
-        const float *xt = INPUT + t * H;
+        const float *xt = INPUT + t * HIDDEN_SZ;
         int   c_idx[TOP_K_]; float c_wt[TOP_K_];
-        router_forward(ROUTER_W, ROUTER_BIAS, xt, H, N_EXP, TOP_K_,
+        router_forward(ROUTER_W, ROUTER_BIAS, xt, HIDDEN_SZ, N_EXP, TOP_K_,
                        c_idx, c_wt);
 
         /* Reference values */
@@ -358,13 +358,13 @@ int main(void) {
         MOE_OUT_3, MOE_OUT_4, MOE_OUT_5
     };
     for (int t = 0; t < T_TOK; t++) {
-        const float *xt = INPUT + t * H;
+        const float *xt = INPUT + t * HIDDEN_SZ;
         moe_forward(ROUTER_W, ROUTER_BIAS,
                     (const float**)eg, (const float**)eu, (const float**)ed,
                     SH_GW, SH_UW, SH_DW,
-                    xt, buf, H, I_SZ, SI_SZ, N_EXP, TOP_K_);
+                    xt, buf, HIDDEN_SZ, I_SZ, SI_SZ, N_EXP, TOP_K_);
         char name[64]; snprintf(name, sizeof(name), "Full MoE token %d", t);
-        all_pass &= check(buf, moe_refs[t], H, name, 1e-4f);
+        all_pass &= check(buf, moe_refs[t], HIDDEN_SZ, name, 1e-4f);
     }
 
     free(buf);
