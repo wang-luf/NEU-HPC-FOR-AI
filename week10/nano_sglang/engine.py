@@ -23,7 +23,8 @@ class Engine:
         """Process all prompt tokens in one forward pass, return first generated token.
         Should also store past_key_values in seq and set status to DECODING."""
         input_ids = torch.tensor([seq.prompt_token_ids], device=self.device)
-        logits, past_key_values = self.model.forward(input_ids)
+        past_key_values = DynamicCache()
+        logits, past_key_values = self.model.forward(input_ids, past_key_values=past_key_values)
         next_token = sample_token(logits[:, -1, :], sampling_params).item()
         seq.past_key_values = past_key_values
         seq.status = SequenceStatus.DECODING
