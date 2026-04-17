@@ -56,7 +56,7 @@ class Scheduler:
         still_running = []
         for seq, token in zip(self.running, new_tokens):
             seq.output_token_ids.append(token)
-            if token == self.tokenizer.eos_token_id or seq.num_generated >= seq.max_tokens:
+            if token == self.tokenizer.eos_token_id or seq.num_generated >= sampling_params.max_tokens:
                 seq.status = SequenceStatus.FINISHED
                 self.finished.append(seq)
             else:
