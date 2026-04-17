@@ -16,7 +16,7 @@ class Model:
         self.vocab_size = self.config.vocab_size
 
         self.model = AutoModelForCausalLM.from_pretrained(
-            model_path, dtype=self.dtype, device_map=device,
+            model_path, torch_dtype=self.dtype, device_map=device,
         )
         self.model.eval()
 
